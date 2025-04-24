@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>盈亏记录表</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f0f2f5;
+      color: #333;
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 1400px;
+      margin: 30px auto;
+      display: flex;
+      gap: 30px;
+      align-items: stretch;
+      justify-content: space-between;
+      padding: 0;
+      min-height: calc(100vh - 60px);
+    }
+    
+    .left-column, .right-column {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background-color: #f4f6f8;
+      border-radius: 12px;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    
+    .right-column {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      justify-content: space-between;
+    }
+    
+    .main-content {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    h1 {
+      text-align: center;
+      margin-top: 0;
+      margin-bottom: 18px;
+      color: #2c3e50;
+      font-size: 24px;
+    }
+    
+    .rules {
+      flex: 1;
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+      padding: 25px;
+      font-size: 15px;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      position: relative;
+    }
+    
+    .rules h2 {
+      margin-top: 0;
+      padding-bottom: 12px;
+      color: #2c3e50;
+      font-size: 20px;
+      text-align: center;
+      border-bottom: 2px solid #f0f2f5;
+      background: linear-gradient(90deg, #4a6cf7, #4a9af7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .rules ul {
+      padding-left: 20px;
+      margin: 18px 0 0 0;
+    }
+    
+    .rules span {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #2c3e50;
+      padding: 5px 10px;
+      background-color: #f5f9ff;
+      border-radius: 6px;
+    }
+    
+    .rules li {
+      margin: 12px 0;
+      line-height: 1.6;
+      position: relative;
+      padding-left: 5px;
+    }
+    
+    .rules li::before {
+      content: '';
+      position: absolute;
+      left: -12px;
+      top: 9px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: linear-gradient(90deg, #4a6cf7, #4a9af7);
+    }
+    
+    .summary {
+      margin: 25px 0;
+      padding: 18px;
+      font-weight: bold;
+      font-size: 18px;
+      text-align: center;
+      border-radius: 10px;
+      background-color: #f8f9fa;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      border: 1px solid rgba(0, 0, 0, 0.04);
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    th {
+      background-color: #f0f4f9;
+      font-weight: 600;
+      color: #2c3e50;
+      padding: 14px 10px;
+      position: sticky;
+      top: 0;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      z-index: 10;
+    }
+    
+    th, td {
+      border: 1px solid #e7e9ec;
+      padding: 12px 10px;
+      text-align: center;
+      font-size: 15px;
+    }
+    
+    tr:nth-child(even) {
+      background-color: #f8f9fa;
+    }
+    
+    tr:hover {
+      background-color: #f0f7ff;
+    }
+    
+    #recordForm {
+      background-color: #f8f9fa;
+      padding: 22px 28px;
+      border-radius: 12px;
+      margin-bottom: 25px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
+      position: relative;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    
+    .form-group {
+      margin-bottom: 16px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #2c3e50;
+      font-size: 15px;
+    }
+    
+    input {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid #e1e4e8;
+      border-radius: 8px;
+      font-size: 15px;
+      transition: all 0.3s;
+      box-sizing: border-box;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+    }
+    
+    input:focus {
+      border-color: #4a9af7;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(74, 154, 247, 0.15);
+    }
+    
+    button {
+      background: linear-gradient(90deg, #4a6cf7, #4a9af7);
+      color: white;
+      border: none;
+      padding: 13px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      transition: all 0.3s;
+      display: block;
+      width: 100%;
+      box-shadow: 0 4px 10px rgba(74, 154, 247, 0.25);
+    }
+    
+    button:hover {
+      background: linear-gradient(90deg, #3d5ce3, #3d8ce3);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(74, 154, 247, 0.35);
+    }
+    
+    button:active {
+      transform: translateY(0);
+      box-shadow: 0 4px 8px rgba(74, 154, 247, 0.2);
+    }
+    
+    .table-container {
+      flex: 1;
+      overflow-y: auto;
+      border-radius: 10px;
+      margin-top: 20px;
+      margin-bottom: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      border: 1px solid rgba(0, 0, 0, 0.04);
+    }
+    
+    .edit-form {
+      display: none;
+      background: #f8f9fa;
+      border: 1px solid #ddd;
+      padding: 25px;
+      margin-top: 30px;
+      border-radius: 8px;
+    }
+    
+    .edit-form h3 {
+      margin-top: 0;
+      margin-bottom: 20px;
+      color: #2c3e50;
+      text-align: center;
+    }
+    
+    .action-btn {
+      cursor: pointer;
+      color: #007bff;
+      font-weight: bold;
+      padding: 4px 8px;
+      display: inline-block;
+    }
+    
+    .action-btn:hover {
+      text-decoration: underline;
+    }
+    
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    
+    .btn-group button {
+      flex: 1;
+    }
+    
+    .positive {
+      color: #28a745;
+    }
+    
+    .negative {
+      color: #dc3545;
+    }
+    
+    .calendar-container {
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+      padding: 25px;
+      margin-top: 0;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .calendar-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #2c3e50;
+      margin: 0;
+      background: linear-gradient(90deg, #4a6cf7, #4a9af7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .calendar-nav {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .calendar-nav button {
+      background: #f0f4f9;
+      color: #4a6cf7;
+      border: 1px solid #e1e4e8;
+      padding: 8px 15px;
+      cursor: pointer;
+      border-radius: 6px;
+      font-size: 14px;
+      width: auto;
+      font-weight: 600;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+      transition: all 0.2s;
+    }
+    
+    .calendar-nav button:hover {
+      background: #e7edf5;
+      transform: translateY(-2px);
+    }
+    
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      grid-gap: 8px;
+    }
+    
+    .calendar-day-header {
+      text-align: center;
+      font-weight: 600;
+      padding: 10px 0;
+      color: #555;
+      font-size: 14px;
+    }
+    
+    .calendar-day {
+      border: 1px solid #e7e9ec;
+      min-height: 65px;
+      padding: 8px;
+      position: relative;
+      background-color: #fff;
+      border-radius: 8px;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+    
+    .calendar-day:hover {
+      background-color: #f0f7ff;
+      border-color: #c3d9f9;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    }
+    
+    .calendar-day.other-month {
+      background-color: #f9f9fa;
+      color: #bbb;
+    }
+    
+    .calendar-day.has-record {
+      border-color: #d0dff7;
+      background-color: #f5f9ff;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.03);
+    }
+    
+    .calendar-day.has-record:hover {
+      background-color: #e9f2ff;
+      box-shadow: 0 5px 12px rgba(0, 0, 0, 0.07);
+    }
+    
+    .calendar-day .day-number {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 5px;
+      color: #444;
+    }
+    
+    .calendar-day .day-profit {
+      font-size: 13px;
+      font-weight: 600;
+    }
+    
+    .calendar-day.selected {
+      background-color: #e3edfd;
+      border-color: #4a9af7;
+      transform: scale(1.05);
+      box-shadow: 0 6px 15px rgba(74, 154, 247, 0.15);
+      position: relative;
+      z-index: 5;
+    }
+    
+    .calendar-day.selected .day-number {
+      color: #4a6cf7;
+    }
+    
+    .calendar-day.selected::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 8px;
+      height: 8px;
+      background-color: #4a9af7;
+      border-radius: 50%;
+    }
+    
+    .performance-summary {
+      margin-top: 30px;
+      background-color: #f8fafd;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.04);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    
+    .performance-header {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 15px;
+      color: #2c3e50;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #f0f2f5;
+      text-align: center;
+      background: linear-gradient(90deg, #4a6cf7, #4a9af7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .performance-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-gap: 20px;
+    }
+    
+    .performance-column {
+      background-color: #fff;
+      padding: 18px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.04);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    
+    .performance-column h4 {
+      margin-top: 0;
+      margin-bottom: 12px;
+      font-size: 16px;
+      color: #2c3e50;
+      text-align: center;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #f0f2f5;
+    }
+    
+    .performance-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
+      font-size: 14px;
+    }
+    
+    .performance-item:last-child {
+      border-bottom: none;
+    }
+    
+    .performance-date {
+      color: #444;
+      font-weight: 500;
+    }
+    
+    .performance-result {
+      font-weight: 600;
+    }
+    
+    .profit-positive {
+      color: #2cb978;
+    }
+    
+    .profit-negative {
+      color: #e74c3c;
+    }
+    
+    @media (max-width: 992px) {
+      .container {
+        flex-direction: column;
+      }
+      
+      .left-column,
+      .right-column {
+        width: 100%;
+      }
+    }
+    
+    /* 盈利特效样式 */
+    @keyframes profit-glow {
+      0% {
+        box-shadow: 0 0 10px rgba(44, 185, 120, 0.5);
+        transform: scale(1);
+      }
+      25% {
+        box-shadow: 0 0 30px rgba(255, 215, 0, 0.8), 0 0 40px rgba(44, 185, 120, 0.6);
+        transform: scale(1.08);
+      }
+      50% {
+        box-shadow: 0 0 25px rgba(44, 185, 120, 0.7), 0 0 45px rgba(255, 215, 0, 0.7);
+        transform: scale(1.06);
+      }
+      75% {
+        box-shadow: 0 0 35px rgba(255, 215, 0, 0.8), 0 0 30px rgba(44, 185, 120, 0.6);
+        transform: scale(1.04);
+      }
+      100% {
+        box-shadow: 0 0 10px rgba(44, 185, 120, 0.5);
+        transform: scale(1);
+      }
+    }
+    
+    @keyframes shine {
+      0% {
+        background-position: -100% 0;
+      }
+      100% {
+        background-position: 200% 0;
+      }
+    }
+
+    @keyframes profit-particles {
+      0% {
+        opacity: 0;
+        transform: translateY(0) scale(0.5) rotate(0deg);
+      }
+      20% {
+        opacity: 1;
+        transform: translateY(-15px) scale(0.8) rotate(20deg);
+      }
+      50% {
+        opacity: 0.9;
+        transform: translateY(-30px) scale(1.2) rotate(-15deg);
+      }
+      80% {
+        opacity: 0.6;
+        transform: translateY(-60px) scale(0.9) rotate(10deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-80px) scale(0.5) rotate(-5deg);
+      }
+    }
+    
+    @keyframes profit-sparkle {
+      0%, 100% {
+        opacity: 0;
+        transform: scale(0.5);
+      }
+      50% {
+        opacity: 1;
+        transform: scale(1.2);
+      }
+    }
+    
+    .calendar-day.profit-effect {
+      animation: profit-glow 2s ease-in-out;
+      overflow: visible;
+      position: relative;
+      z-index: 50;
+    }
+    
+    .calendar-day.profit-effect::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, 
+        rgba(255, 215, 0, 0) 0%, 
+        rgba(255, 215, 0, 0.8) 50%, 
+        rgba(255, 215, 0, 0) 100%);
+      background-size: 200% 100%;
+      animation: shine 1s linear infinite;
+      z-index: 3;
+      border-radius: 8px;
+      pointer-events: none;
+    }
+    
+    .profit-particle {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background-color: gold;
+      border-radius: 50%;
+      z-index: 20;
+      pointer-events: none;
+      animation: profit-particles 1.8s ease-out forwards;
+      box-shadow: 0 0 10px gold, 0 0 5px rgba(44, 185, 120, 0.8);
+    }
+    
+    .profit-particle.dollar {
+      background-color: rgba(44, 185, 120, 0.9);
+      box-shadow: 0 0 8px #2cb978, 0 0 12px rgba(255, 215, 0, 0.6);
+    }
+    
+    .profit-particle.sparkle {
+      background: transparent;
+      box-shadow: none;
+      width: 15px;
+      height: 15px;
+    }
+    
+    .profit-particle.sparkle::before {
+      content: '✨';
+      position: absolute;
+      font-size: 15px;
+      color: gold;
+      animation: profit-sparkle 0.8s ease-in-out infinite;
+    }
+    
+    .profit-particle.dollar::before {
+      content: '$';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #fff;
+      font-size: 8px;
+      font-weight: bold;
+    }
+    
+    /* 亏损特效样式 */
+    @keyframes loss-pulse {
+      0% {
+        transform: scale(1);
+        box-shadow: 0 0 10px rgba(231, 76, 60, 0.5);
+      }
+      50% {
+        transform: scale(1.05);
+        box-shadow: 0 0 20px rgba(231, 76, 60, 0.7);
+      }
+      100% {
+        transform: scale(1);
+        box-shadow: 0 0 10px rgba(231, 76, 60, 0.5);
+      }
+    }
+    
+    @keyframes loss-message {
+      0% {
+        opacity: 0;
+        transform: translateY(10px) scale(0.8);
+      }
+      20% {
+        opacity: 1;
+        transform: translateY(-5px) scale(1);
+      }
+      80% {
+        opacity: 1;
+        transform: translateY(-10px) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-15px) scale(0.9);
+      }
+    }
+    
+    .calendar-day.loss-effect {
+      animation: loss-pulse 1.5s ease-in-out;
+    }
+    
+    .loss-message {
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #fff;
+      color: #e74c3c;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: bold;
+      white-space: nowrap;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+      z-index: 30;
+      pointer-events: none;
+      animation: loss-message 2s ease-out forwards;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="left-column">
+      <div class="main-content">
+        <h1>策略实验记录</h1>
+
+        <form id="recordForm">
+          <div class="form-group">
+            <label for="date">日期：</label>
+            <input type="date" id="date" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="bet">参与金额：</label>
+            <input type="number" id="bet" value="100" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="result">盈亏金额：</label>
+            <input type="number" id="result" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="mood">心态评分（1-5）：</label>
+            <input type="number" id="mood" min="1" max="5" value="4" required>
+            <small>1.失控 2.冲动 3.轻微上头 4.心态平和 5.严格按照策略+纪律</small>
+          </div>
+          
+          <button type="submit">添加记录</button>
+        </form>
+
+        <div class="summary" id="summary"></div>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>日期</th>
+                <th>投注</th>
+                <th>盈亏</th>
+                <th>累计盈亏</th>
+                <th>心态</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="recordTable"></tbody>
+          </table>
+        </div>
+
+        <div class="edit-form" id="editForm">
+          <h3>修改记录</h3>
+          <input type="hidden" id="editIndex">
+          
+          <div class="form-group">
+            <label for="editDate">日期：</label>
+            <input type="date" id="editDate">
+          </div>
+          
+          <div class="form-group">
+            <label for="editBet">投注金额：</label>
+            <input type="number" id="editBet">
+          </div>
+          
+          <div class="form-group">
+            <label for="editResult">盈亏金额：</label>
+            <input type="number" id="editResult">
+          </div>
+          
+          <div class="form-group">
+            <label for="editMood">心态评分：</label>
+            <input type="number" id="editMood" min="1" max="5">
+          </div>
+          
+          <div class="btn-group">
+            <button onclick="saveEdit()">保存</button>
+            <button onclick="cancelEdit()" style="background-color: #6c757d;">取消</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="right-column">
+      <div class="rules">
+        <h2>执行纪律</h2>
+        <ul>
+          <span>每月盈利目标：+1500 元</span>
+          <span>每月最大亏损：-300 元</span>
+          <span>每日下注上限：100 元</span>
+          <hr>
+          <li>1. 出现3次心态评分为3的情况，本月需立即停止</li>
+          <li>2. 达到每月最大亏损-300，本月需立即停止</li>
+          <li>3. 当日盈利回撤50%，立即停止（如：本来赢100，连续输，只剩下50时）</li>
+          <li>4. 每周最多不超过4次参与赌博</li>
+          <li>5. 每次下注后必须记录盈亏 + 心态</li>
+        </ul>
+      </div>
+
+      <div class="calendar-container">
+        <div class="calendar-header">
+          <h3 class="calendar-title">月度盈亏日历</h3>
+          <div class="calendar-nav">
+            <button id="prevMonth">上个月</button>
+            <button id="currentMonth">本月</button>
+            <button id="nextMonth">下个月</button>
+          </div>
+        </div>
+        
+        <div id="calendarGrid" class="calendar-grid">
+          <!-- Calendar will be generated by JavaScript -->
+        </div>
+        
+        <div class="performance-summary">
+          <div class="performance-header">盈亏表现统计</div>
+          <div class="performance-list">
+            <div class="performance-column">
+              <h4>最佳表现日</h4>
+              <div id="bestDaysList">
+                <!-- Top days will be filled by JavaScript -->
+              </div>
+            </div>
+            <div class="performance-column">
+              <h4>最差表现日</h4>
+              <div id="worstDaysList">
+                <!-- Worst days will be filled by JavaScript -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let records = JSON.parse(localStorage.getItem('gamblingRecords')) || []
+    let cumulativeProfit = 0
+
+    const recordTable = document.getElementById('recordTable')
+    const summary = document.getElementById('summary')
+    
+    // Set default date to yesterday
+    function setDefaultDate() {
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      const formattedDate = yesterday.toISOString().split('T')[0];
+      document.getElementById('date').value = formattedDate;
+    }
+    
+    // Call setDefaultDate when page loads
+    setDefaultDate();
+
+    function renderRecords() {
+      recordTable.innerHTML = ''
+      
+      // 创建记录的副本并按日期降序排序（最新的在前面）
+      const sortedRecords = [...records].sort((a, b) => {
+        return new Date(b.date) - new Date(a.date)
+      })
+      
+      // 重新计算累计盈亏（保持按原始顺序）
+      let runningTotal = 0
+      const profitTotals = {}
+      
+      // 首先按原始顺序计算每个索引位置的累计盈亏
+      records.forEach((record, index) => {
+        runningTotal += record.result
+        profitTotals[index] = runningTotal
+      })
+      
+      // 渲染排序后的记录，但使用原始索引来获取正确的累计盈亏
+      sortedRecords.forEach((record) => {
+        const originalIndex = records.findIndex(r => 
+          r.date === record.date && 
+          r.bet === record.bet && 
+          r.result === record.result && 
+          r.mood === record.mood
+        )
+        
+        const cumulativeProfit = profitTotals[originalIndex]
+        const resultClass = record.result >= 0 ? 'positive' : 'negative'
+        const cumulativeClass = cumulativeProfit >= 0 ? 'positive' : 'negative'
+        
+        const row = `
+          <tr>
+            <td>${record.date}</td>
+            <td>${record.bet}$</td>
+            <td class="${resultClass}">${record.result >= 0 ? '+' : '-'}${Math.abs(record.result)}$</td>
+            <td class="${cumulativeClass}">${cumulativeProfit >= 0 ? '+' : '-'}${Math.abs(cumulativeProfit)}$</td>
+            <td>${record.mood}</td>
+            <td>
+              <span class="action-btn" onclick="editRecord(${originalIndex})">✏️ 修改</span> | 
+              <span class="action-btn" onclick="deleteRecord(${originalIndex})">🗑 删除</span>
+            </td>
+          </tr>
+        `
+        recordTable.innerHTML += row
+      })
+
+      // 使用最新计算的累计盈亏来更新摘要
+      updateSummary(profitTotals[records.length - 1] || 0)
+      renderCalendar()
+      updatePerformanceSummary()
+    }
+
+    function updateSummary(totalProfit) {
+      const cumulativeProfit = totalProfit || 0
+      
+      if (cumulativeProfit >= 1500) {
+        summary.textContent = `🎉 达成目标！本月盈利 ${cumulativeProfit}$`
+        summary.style.color = '#28a745'
+        summary.style.backgroundColor = '#d4edda'
+      } else if (cumulativeProfit <= -300) {
+        summary.textContent = `⚠️ 已触发止损，亏损 ${Math.abs(cumulativeProfit)}$，应停止。`
+        summary.style.color = '#dc3545'
+        summary.style.backgroundColor = '#f8d7da'
+      } else {
+        summary.textContent = `当前累计盈亏：${cumulativeProfit >= 0 ? '+' : '-'}${Math.abs(cumulativeProfit)}$`
+        summary.style.color = cumulativeProfit >= 0 ? '#28a745' : '#dc3545'
+        summary.style.backgroundColor = '#f8f9fa'
+      }
+    }
+
+    document.getElementById('recordForm').addEventListener('submit', function(e) {
+      e.preventDefault()
+
+      const newRecord = {
+        date: document.getElementById('date').value,
+        bet: parseFloat(document.getElementById('bet').value),
+        result: parseFloat(document.getElementById('result').value),
+        mood: parseInt(document.getElementById('mood').value)
+      }
+
+      records.push(newRecord)
+      localStorage.setItem('gamblingRecords', JSON.stringify(records))
+      renderRecords()
+      this.reset()
+    })
+
+    function editRecord(index) {
+      const record = records[index]
+      document.getElementById('editIndex').value = index
+      document.getElementById('editDate').value = record.date
+      document.getElementById('editBet').value = record.bet
+      document.getElementById('editResult').value = record.result
+      document.getElementById('editMood').value = record.mood
+      document.getElementById('editForm').style.display = 'block'
+    }
+
+    function saveEdit() {
+      const index = document.getElementById('editIndex').value
+      records[index] = {
+        date: document.getElementById('editDate').value,
+        bet: parseFloat(document.getElementById('editBet').value),
+        result: parseFloat(document.getElementById('editResult').value),
+        mood: parseInt(document.getElementById('editMood').value)
+      }
+      localStorage.setItem('gamblingRecords', JSON.stringify(records))
+      document.getElementById('editForm').style.display = 'none'
+      renderRecords()
+    }
+
+    function cancelEdit() {
+      document.getElementById('editForm').style.display = 'none'
+    }
+
+    function deleteRecord(index) {
+      if (confirm('确定要删除这条记录吗？')) {
+        records.splice(index, 1)
+        localStorage.setItem('gamblingRecords', JSON.stringify(records))
+        renderRecords()
+      }
+    }
+
+    // Current displayed month/year
+    let currentCalendarDate = new Date()
+    
+    // Function to render the calendar
+    function renderCalendar() {
+      const calendarGrid = document.getElementById('calendarGrid')
+      const year = currentCalendarDate.getFullYear()
+      const month = currentCalendarDate.getMonth()
+      
+      // Update calendar title
+      document.querySelector('.calendar-title').textContent = 
+        `${year}年${month + 1}月盈亏日历`
+      
+      // Clear previous calendar
+      calendarGrid.innerHTML = ''
+      
+      // Add day headers
+      const daysOfWeek = ['日', '一', '二', '三', '四', '五', '六']
+      daysOfWeek.forEach(day => {
+        const dayHeader = document.createElement('div')
+        dayHeader.className = 'calendar-day-header'
+        dayHeader.textContent = day
+        calendarGrid.appendChild(dayHeader)
+      })
+      
+      // Get first day of month and total days
+      const firstDay = new Date(year, month, 1)
+      const lastDay = new Date(year, month + 1, 0)
+      const totalDays = lastDay.getDate()
+      
+      // Get records for this month
+      const monthRecords = {}
+      records.forEach(record => {
+        const recordDate = new Date(record.date)
+        if (recordDate.getFullYear() === year && recordDate.getMonth() === month) {
+          const day = recordDate.getDate()
+          if (!monthRecords[day]) {
+            monthRecords[day] = []
+          }
+          monthRecords[day].push(record)
+        }
+      })
+      
+      // Calculate starting empty cells (days from previous month)
+      let startingDay = firstDay.getDay() // 0 = Sunday, 1 = Monday, etc.
+      for (let i = 0; i < startingDay; i++) {
+        addEmptyDay(calendarGrid, 'other-month')
+      }
+      
+      // Add days of current month
+      for (let day = 1; day <= totalDays; day++) {
+        const hasRecord = monthRecords[day] ? true : false
+        let totalProfit = 0
+        
+        if (hasRecord) {
+          monthRecords[day].forEach(record => {
+            totalProfit += record.result
+          })
+        }
+        
+        addCalendarDay(calendarGrid, day, hasRecord, totalProfit)
+      }
+      
+      // Fill remaining grid with next month's days
+      const cellsAdded = startingDay + totalDays
+      const remainingCells = 42 - cellsAdded // 6 rows of 7 days
+      for (let i = 0; i < remainingCells; i++) {
+        if (i < 7) { // Only add up to 1 extra row
+          addEmptyDay(calendarGrid, 'other-month')
+        }
+      }
+    }
+    
+    // Helper function to add empty day to calendar
+    function addEmptyDay(grid, className) {
+      const dayElement = document.createElement('div')
+      dayElement.className = `calendar-day ${className}`
+      grid.appendChild(dayElement)
+    }
+    
+    // Helper function to add day to calendar
+    function addCalendarDay(grid, day, hasRecord, profit = 0) {
+      const dayElement = document.createElement('div')
+      dayElement.className = `calendar-day${hasRecord ? ' has-record' : ''}`
+      
+      const dayNumber = document.createElement('div')
+      dayNumber.className = 'day-number'
+      dayNumber.textContent = day
+      dayElement.appendChild(dayNumber)
+      
+      if (hasRecord) {
+        const dayProfit = document.createElement('div')
+        dayProfit.className = `day-profit ${profit >= 0 ? 'profit-positive' : 'profit-negative'}`
+        dayProfit.textContent = `${profit >= 0 ? '+' : '-'}${Math.abs(profit)}$`
+        dayElement.appendChild(dayProfit)
+      }
+      
+      // 添加点击事件，设置表单日期并显示特效
+      dayElement.addEventListener('click', () => {
+        // 修复日期问题，确保日期准确
+        const year = currentCalendarDate.getFullYear()
+        const month = currentCalendarDate.getMonth()
+        
+        // 创建新的日期对象，确保日期准确无误
+        const selectedDate = new Date(Date.UTC(year, month, day))
+        // 使用 toISOString 获取格式化的日期，然后只取日期部分
+        const formattedDate = selectedDate.toISOString().substring(0, 10)
+        document.getElementById('date').value = formattedDate
+        
+        // 添加高亮效果
+        const allDays = document.querySelectorAll('.calendar-day')
+        allDays.forEach(el => el.classList.remove('selected'))
+        dayElement.classList.add('selected')
+        
+        // 如果是有记录的日期，根据盈亏情况添加特效
+        if (hasRecord) {
+          if (profit >= 0) {
+            // 盈利特效
+            playProfitEffect(dayElement)
+          } else {
+            // 亏损特效
+            playLossEffect(dayElement)
+          }
+        }
+      })
+      
+      grid.appendChild(dayElement)
+    }
+    
+    // Function to update the performance summary (best and worst days)
+    function updatePerformanceSummary() {
+      const bestDaysList = document.getElementById('bestDaysList')
+      const worstDaysList = document.getElementById('worstDaysList')
+      
+      // Clear previous lists
+      bestDaysList.innerHTML = ''
+      worstDaysList.innerHTML = ''
+      
+      // If no records, don't display anything
+      if (records.length === 0) {
+        bestDaysList.innerHTML = '<div class="performance-item"><span>暂无记录</span></div>'
+        worstDaysList.innerHTML = '<div class="performance-item"><span>暂无记录</span></div>'
+        return
+      }
+      
+      // Group records by date and calculate total profit for each day
+      const dailyProfits = {}
+      records.forEach(record => {
+        if (!dailyProfits[record.date]) {
+          dailyProfits[record.date] = 0
+        }
+        dailyProfits[record.date] += record.result
+      })
+      
+      // Convert to array for sorting
+      const profitArray = Object.entries(dailyProfits).map(([date, profit]) => ({
+        date,
+        profit
+      }))
+      
+      // 筛选出盈利日（利润>0）和亏损日（利润<0）
+      const profitableDays = profitArray.filter(day => day.profit > 0)
+      const lossDays = profitArray.filter(day => day.profit < 0)
+      
+      // 对盈利日按照盈利金额从高到低排序，取前3条
+      const bestDays = profitableDays.sort((a, b) => b.profit - a.profit).slice(0, 3)
+      
+      // 对亏损日按照亏损金额从大到小排序（数值从小到大），取前3条
+      const worstDays = lossDays.sort((a, b) => a.profit - b.profit).slice(0, 3)
+      
+      // 渲染最佳表现日（只显示盈利的日期）
+      if (bestDays.length > 0) {
+        bestDays.forEach(day => {
+          const item = document.createElement('div')
+          item.className = 'performance-item'
+          
+          const dateSpan = document.createElement('span')
+          dateSpan.className = 'performance-date'
+          dateSpan.textContent = formatDate(day.date)
+          
+          const resultSpan = document.createElement('span')
+          resultSpan.className = 'performance-result profit-positive'
+          resultSpan.textContent = `+${day.profit}$`
+          
+          item.appendChild(dateSpan)
+          item.appendChild(resultSpan)
+          bestDaysList.appendChild(item)
+        })
+      } else {
+        bestDaysList.innerHTML = '<div class="performance-item"><span>暂无盈利记录</span></div>'
+      }
+      
+      // 渲染最差表现日（只显示亏损的日期）
+      if (worstDays.length > 0) {
+        worstDays.forEach(day => {
+          const item = document.createElement('div')
+          item.className = 'performance-item'
+          
+          const dateSpan = document.createElement('span')
+          dateSpan.className = 'performance-date'
+          dateSpan.textContent = formatDate(day.date)
+          
+          const resultSpan = document.createElement('span')
+          resultSpan.className = 'performance-result profit-negative'
+          resultSpan.textContent = `-${Math.abs(day.profit)}$`
+          
+          item.appendChild(dateSpan)
+          item.appendChild(resultSpan)
+          worstDaysList.appendChild(item)
+        })
+      } else {
+        worstDaysList.innerHTML = '<div class="performance-item"><span>暂无亏损记录</span></div>'
+      }
+    }
+    
+    // Helper function to format date as MM-DD
+    function formatDate(dateString) {
+      const date = new Date(dateString)
+      return `${date.getMonth() + 1}-${date.getDate()}`
+    }
+    
+    // Add event listeners for calendar navigation
+    document.getElementById('prevMonth').addEventListener('click', () => {
+      currentCalendarDate.setMonth(currentCalendarDate.getMonth() - 1)
+      renderCalendar()
+    })
+    
+    document.getElementById('currentMonth').addEventListener('click', () => {
+      currentCalendarDate = new Date()
+      renderCalendar()
+    })
+    
+    document.getElementById('nextMonth').addEventListener('click', () => {
+      currentCalendarDate.setMonth(currentCalendarDate.getMonth() + 1)
+      renderCalendar()
+    })
+
+    // 播放盈利特效
+    function playProfitEffect(element) {
+      // 移除之前的特效类和粒子
+      element.classList.remove('profit-effect')
+      element.classList.remove('loss-effect')
+      const oldParticles = document.querySelectorAll('.profit-particle')
+      oldParticles.forEach(p => p.remove())
+      
+      // 添加发光效果
+      element.classList.add('profit-effect')
+      
+      // 播放金币声音（可选）
+      // const coinSound = new Audio('coin.mp3');
+      // coinSound.volume = 0.3;
+      // coinSound.play();
+      
+      // 创建更多样化的粒子效果
+      const particleCount = 20; // 增加粒子数量
+      for (let i = 0; i < particleCount; i++) {
+        setTimeout(() => {
+          const particle = document.createElement('div')
+          
+          // 创建多种类型的粒子
+          if (i % 5 === 0) {
+            particle.className = 'profit-particle dollar'
+          } else if (i % 4 === 0) {
+            particle.className = 'profit-particle sparkle'
+          } else {
+            particle.className = 'profit-particle'
+          }
+          
+          // 随机位置 - 让粒子分布更广
+          const top = Math.random() * 120 - 20
+          const left = Math.random() * 120 - 10
+          
+          particle.style.top = `${top}%`
+          particle.style.left = `${left}%`
+          
+          // 随机大小、延迟和持续时间
+          const size = 6 + Math.random() * 12
+          const delay = Math.random() * 0.8
+          
+          particle.style.width = `${size}px`
+          particle.style.height = `${size}px`
+          particle.style.animationDelay = `${delay}s`
+          particle.style.animationDuration = `${1.2 + Math.random() * 1}s`
+          
+          // 随机旋转
+          particle.style.transform = `rotate(${Math.random() * 360}deg)`
+          
+          element.appendChild(particle)
+          
+          // 自动清理
+          setTimeout(() => {
+            particle.remove()
+          }, 2500)
+        }, i * 80) // 更快的粒子生成速度
+      }
+      
+      // 额外添加一个中心爆发效果
+      setTimeout(() => {
+        for (let i = 0; i < 10; i++) {
+          const burstParticle = document.createElement('div')
+          burstParticle.className = i % 2 === 0 ? 'profit-particle dollar' : 'profit-particle'
+          
+          // 所有粒子从中心开始
+          burstParticle.style.top = '50%'
+          burstParticle.style.left = '50%'
+          burstParticle.style.transform = `rotate(${i * 36}deg)`
+          
+          const size = 8 + Math.random() * 6
+          burstParticle.style.width = `${size}px`
+          burstParticle.style.height = `${size}px`
+          
+          element.appendChild(burstParticle)
+          
+          // 用CSS动画实现爆发效果
+          setTimeout(() => {
+            // 随机方向的爆发
+            const angle = i * 36
+            const distance = 80 + Math.random() * 40
+            burstParticle.style.transform = `translate(${Math.cos(angle) * distance}%, ${Math.sin(angle) * distance}%) scale(0.5)`
+            burstParticle.style.opacity = '0'
+            burstParticle.style.transition = 'all 1s cubic-bezier(0.165, 0.84, 0.44, 1)'
+            
+            setTimeout(() => burstParticle.remove(), 1000)
+          }, 10)
+        }
+      }, 300)
+      
+      // 自动清理类
+      setTimeout(() => {
+        element.classList.remove('profit-effect')
+      }, 2000)
+    }
+    
+    // 播放亏损特效
+    function playLossEffect(element) {
+      // 移除之前的特效类
+      element.classList.remove('profit-effect')
+      element.classList.remove('loss-effect')
+      
+      // 移除之前的消息
+      const oldMessages = document.querySelectorAll('.loss-message')
+      oldMessages.forEach(m => m.remove())
+      
+      // 添加脉动效果
+      element.classList.add('loss-effect')
+      
+      // 创建鼓励消息
+      const messages = [
+        '不气馁!',
+        '再接再厉!',
+        '失败是成功之母!',
+        '不要灰心!',
+        '东山再起!',
+        '稳住心态!'
+      ]
+      
+      const message = document.createElement('div')
+      message.className = 'loss-message'
+      message.textContent = messages[Math.floor(Math.random() * messages.length)]
+      element.appendChild(message)
+      
+      // 自动清理
+      setTimeout(() => {
+        element.classList.remove('loss-effect')
+        setTimeout(() => {
+          message.remove()
+        }, 1000)
+      }, 1500)
+    }
+
+    renderRecords()
+  </script>
+</body>
+</html>
