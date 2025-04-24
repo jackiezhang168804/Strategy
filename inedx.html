@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>盈亏记录表</title>
+  <title data-translate-key="pageTitle">策略记录表1111</title>
   <style>
     body {
       font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
@@ -118,8 +118,8 @@
     }
     
     .summary {
-      margin: 25px 0;
-      padding: 18px;
+      margin: 15px 0;
+      padding: 15px;
       font-weight: bold;
       font-size: 18px;
       text-align: center;
@@ -607,8 +607,10 @@
     }
     
     .profit-particle.dollar {
-      background-color: rgba(44, 185, 120, 0.9);
-      box-shadow: 0 0 8px #2cb978, 0 0 12px rgba(255, 215, 0, 0.6);
+      background-color: transparent;
+      box-shadow: none;
+      width: 12px;
+      height: 12px;
     }
     
     .profit-particle.sparkle {
@@ -632,9 +634,10 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      color: #fff;
-      font-size: 8px;
+      color: #2cb978;
+      font-size: 12px;
       font-weight: bold;
+      text-shadow: 0 0 5px rgba(44, 185, 120, 0.7);
     }
     
     /* 亏损特效样式 */
@@ -693,37 +696,93 @@
       pointer-events: none;
       animation: loss-message 2s ease-out forwards;
     }
+
+    /* 更新语言切换器样式和位置 */
+    #language-switcher {
+      position: relative;
+      text-align: center;
+      padding: 8px 0;
+      margin-bottom: 10px;
+      background-color: #fff;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+    }
+    
+    .flag-container {
+      display: inline-flex;
+      gap: 12px;
+      padding: 8px 20px;
+      background-color: #f8fafd;
+      border-radius: 25px;
+      border: 1px solid #e1e4e8;
+    }
+    
+    .flag {
+      font-size: 24px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      opacity: 0.6;
+      display: inline-block;
+      line-height: 1;
+      padding: 3px 4px;
+      border-radius: 2px;
+      vertical-align: middle;
+    }
+    
+    .flag:hover {
+      transform: scale(1.15) translateY(-2px);
+      opacity: 1;
+      background-color: #e3edfd;
+    }
+    
+    .flag.active {
+      opacity: 1;
+      transform: scale(1.1);
+      box-shadow: 0 0 0 2px #4a9af7;
+      background-color: #dbe9fc;
+      border-radius: 2px;
+    }
   </style>
 </head>
 <body>
+  <div id="language-switcher">
+    <div class="flag-container">
+      <span class="flag" id="flag-zh" title="中文">🇨🇳</span>
+      <span class="flag" id="flag-en" title="English">🇺🇸</span>
+      <span class="flag" id="flag-vi" title="Tiếng Việt">🇻🇳</span>
+      <span class="flag" id="flag-de" title="Deutsch">🇩🇪</span>
+      <span class="flag" id="flag-th" title="ไทย">🇹🇭</span>
+      <span class="flag" id="flag-tw" title="中華臺北">🇹🇼</span>
+    </div>
+  </div>
+  
   <div class="container">
     <div class="left-column">
       <div class="main-content">
-        <h1>策略实验记录</h1>
+        <h1 data-translate-key="mainTitle">实时策略记录仪表盘</h1>
 
         <form id="recordForm">
           <div class="form-group">
-            <label for="date">日期：</label>
+            <label for="date" data-translate-key="dateLabel">日期：</label>
             <input type="date" id="date" required>
           </div>
           
           <div class="form-group">
-            <label for="bet">参与金额：</label>
+            <label for="bet" data-translate-key="betLabel">投注金额：</label>
             <input type="number" id="bet" value="100" required>
           </div>
           
           <div class="form-group">
-            <label for="result">盈亏金额：</label>
+            <label for="result" data-translate-key="resultLabel">盈亏金额：</label>
             <input type="number" id="result" required>
           </div>
           
           <div class="form-group">
-            <label for="mood">心态评分（1-5）：</label>
+            <label for="mood" data-translate-key="moodLabel">心态评分（1-5）：</label>
             <input type="number" id="mood" min="1" max="5" value="4" required>
-            <small>1.失控 2.冲动 3.轻微上头 4.心态平和 5.严格按照策略+纪律</small>
+            <small data-translate-key="moodHint">1.失控 2.冲动 3.轻微上头 4.心态平和 5.严格按照策略+纪律</small>
           </div>
           
-          <button type="submit">添加记录</button>
+          <button type="submit" data-translate-key="addRecordBtn">添加记录</button>
         </form>
 
         <div class="summary" id="summary"></div>
@@ -732,12 +791,12 @@
           <table>
             <thead>
               <tr>
-                <th>日期</th>
-                <th>投注</th>
-                <th>盈亏</th>
-                <th>累计盈亏</th>
-                <th>心态</th>
-                <th>操作</th>
+                <th data-translate-key="dateHeader">日期</th>
+                <th data-translate-key="betHeader">投注</th>
+                <th data-translate-key="plHeader">盈亏</th>
+                <th data-translate-key="cumulativeHeader">累计盈亏</th>
+                <th data-translate-key="moodHeader">心态</th>
+                <th data-translate-key="actionsHeader">操作</th>
               </tr>
             </thead>
             <tbody id="recordTable"></tbody>
@@ -745,32 +804,32 @@
         </div>
 
         <div class="edit-form" id="editForm">
-          <h3>修改记录</h3>
+          <h3 data-translate-key="editTitle">修改记录</h3>
           <input type="hidden" id="editIndex">
           
           <div class="form-group">
-            <label for="editDate">日期：</label>
+            <label for="editDate" data-translate-key="dateLabel">日期：</label>
             <input type="date" id="editDate">
           </div>
           
           <div class="form-group">
-            <label for="editBet">投注金额：</label>
+            <label for="editBet" data-translate-key="betLabel">投注金额：</label>
             <input type="number" id="editBet">
           </div>
           
           <div class="form-group">
-            <label for="editResult">盈亏金额：</label>
+            <label for="editResult" data-translate-key="resultLabel">盈亏金额：</label>
             <input type="number" id="editResult">
           </div>
           
           <div class="form-group">
-            <label for="editMood">心态评分：</label>
+            <label for="editMood" data-translate-key="moodLabel">心态评分：</label>
             <input type="number" id="editMood" min="1" max="5">
           </div>
           
           <div class="btn-group">
-            <button onclick="saveEdit()">保存</button>
-            <button onclick="cancelEdit()" style="background-color: #6c757d;">取消</button>
+            <button onclick="saveEdit()" data-translate-key="saveBtn">保存</button>
+            <button onclick="cancelEdit()" style="background-color: #6c757d;" data-translate-key="cancelBtn">取消</button>
           </div>
         </div>
       </div>
@@ -778,27 +837,27 @@
 
     <div class="right-column">
       <div class="rules">
-        <h2>执行纪律</h2>
+        <h2 data-translate-key="rulesTitle">执行纪律</h2>
         <ul>
-          <span>每月盈利目标：+1500 元</span>
-          <span>每月最大亏损：-300 元</span>
-          <span>每日下注上限：100 元</span>
+          <span data-translate-key="monthlyProfitGoal">每月盈利目标：+1500 元</span>
+          <span data-translate-key="monthlyLossLimit">每月最大亏损：-300 元</span>
+          <span data-translate-key="dailyBetLimit">每日下注上限：100 元</span>
           <hr>
-          <li>1. 出现3次心态评分为3的情况，本月需立即停止</li>
-          <li>2. 达到每月最大亏损-300，本月需立即停止</li>
-          <li>3. 当日盈利回撤50%，立即停止（如：本来赢100，连续输，只剩下50时）</li>
-          <li>4. 每周最多不超过4次参与赌博</li>
-          <li>5. 每次下注后必须记录盈亏 + 心态</li>
+          <li data-translate-key="rule1">1. 出现3次心态评分为3的情况，本月需立即停止</li>
+          <li data-translate-key="rule2">2. 达到每月最大亏损-300，本月需立即停止</li>
+          <li data-translate-key="rule3">3. 当日盈利回撤50%，立即停止（如：本来赢100，连续输，只剩下50时）</li>
+          <li data-translate-key="rule4">4. 每周最多不超过4次参与赌博</li>
+          <li data-translate-key="rule5">5. 每次下注后必须记录盈亏 + 心态</li>
         </ul>
       </div>
 
       <div class="calendar-container">
         <div class="calendar-header">
-          <h3 class="calendar-title">月度盈亏日历</h3>
+          <h3 class="calendar-title" data-translate-key="calendarTitle">月度盈亏日历</h3>
           <div class="calendar-nav">
-            <button id="prevMonth">上个月</button>
-            <button id="currentMonth">本月</button>
-            <button id="nextMonth">下个月</button>
+            <button id="prevMonth" data-translate-key="prevMonthBtn">上个月</button>
+            <button id="currentMonth" data-translate-key="currentMonthBtn">本月</button>
+            <button id="nextMonth" data-translate-key="nextMonthBtn">下个月</button>
           </div>
         </div>
         
@@ -807,16 +866,16 @@
         </div>
         
         <div class="performance-summary">
-          <div class="performance-header">盈亏表现统计</div>
+          <h3 class="performance-header" data-translate-key="performanceTitle">盈亏表现统计</h3>
           <div class="performance-list">
             <div class="performance-column">
-              <h4>最佳表现日</h4>
+              <h4 data-translate-key="bestDaysHeader">最佳表现日</h4>
               <div id="bestDaysList">
                 <!-- Top days will be filled by JavaScript -->
               </div>
             </div>
             <div class="performance-column">
-              <h4>最差表现日</h4>
+              <h4 data-translate-key="worstDaysHeader">最差表现日</h4>
               <div id="worstDaysList">
                 <!-- Worst days will be filled by JavaScript -->
               </div>
@@ -828,6 +887,130 @@
   </div>
 
   <script>
+    const translations = {
+      zh: {
+        pageTitle: "盈亏记录表",
+        mainTitle: "每月赌博盈亏记录表",
+        dateLabel: "日期：",
+        betLabel: "投注金额：",
+        resultLabel: "盈亏金额：",
+        moodLabel: "心态评分（1-5）：",
+        moodHint: "1.失控 2.冲动 3.轻微上头 4.心态平和 5.严格按照策略+纪律",
+        addRecordBtn: "添加记录",
+        dateHeader: "日期",
+        betHeader: "投注",
+        plHeader: "盈亏",
+        cumulativeHeader: "累计盈亏",
+        moodHeader: "心态",
+        actionsHeader: "操作",
+        editTitle: "修改记录",
+        saveBtn: "保存",
+        cancelBtn: "取消",
+        deleteConfirm: "确定要删除这条记录吗？",
+        rulesTitle: "执行纪律",
+        monthlyProfitGoal: "每月盈利目标：+1500 元",
+        monthlyLossLimit: "每月最大亏损：-300 元",
+        dailyBetLimit: "每日下注上限：100 元",
+        rule1: "1. 出现3次心态评分为3的情况，本月需立即停止",
+        rule2: "2. 达到每月最大亏损-300，本月需立即停止",
+        rule3: "3. 当日盈利回撤50%，立即停止（如：本来赢100，连续输，只剩下50时）",
+        rule4: "4. 每周最多不超过4次参与赌博",
+        rule5: "5. 每次下注后必须记录盈亏 + 心态",
+        calendarTitle: "月度盈亏日历",
+        prevMonthBtn: "上个月",
+        currentMonthBtn: "本月",
+        nextMonthBtn: "下个月",
+        performanceTitle: "盈亏表现统计",
+        bestDaysHeader: "最佳表现日",
+        worstDaysHeader: "最差表现日",
+        noRecords: "暂无记录",
+        noProfitRecords: "暂无盈利记录",
+        noLossRecords: "暂无亏损记录",
+        summaryTargetReached: "🎉 达成目标！本月盈利 {profit}$",
+        summaryStopLoss: "⚠️ 已触发止损，亏损 {loss}$，应停止。",
+        summaryCurrentPL: "当前累计盈亏：{sign}{profit}$",
+        calendarDayNames: ['日', '一', '二', '三', '四', '五', '六'],
+        lossMessages: ['不气馁!', '再接再厉!', '失败是成功之母!', '不要灰心!', '东山再起!', '稳住心态!'],
+        langNotSupported: "暂不支持该语言",
+        editAction: "✏️ 修改",
+        deleteAction: "🗑 删除"
+      },
+      en: {
+        pageTitle: "P/L Records",
+        mainTitle: "Monthly Gambling P/L Records",
+        dateLabel: "Date:",
+        betLabel: "Bet Amount:",
+        resultLabel: "P/L Amount:",
+        moodLabel: "Mood Score (1-5):",
+        moodHint: "1.Tilted 2.Impulsive 3.Slightly Heated 4.Calm 5.Strict Strategy+Discipline",
+        addRecordBtn: "Add Record",
+        dateHeader: "Date",
+        betHeader: "Bet",
+        plHeader: "P/L",
+        cumulativeHeader: "Cumulative P/L",
+        moodHeader: "Mood",
+        actionsHeader: "Actions",
+        editTitle: "Edit Record",
+        saveBtn: "Save",
+        cancelBtn: "Cancel",
+        deleteConfirm: "Are you sure you want to delete this record?",
+        rulesTitle: "Discipline Rules",
+        monthlyProfitGoal: "Monthly Profit Goal: +1500元",
+        monthlyLossLimit: "Monthly Loss Limit: -300元",
+        dailyBetLimit: "Daily Bet Limit: 100元",
+        rule1: "1. Stop immediately if Mood Score 3 occurs 3 times this month.",
+        rule2: "2. Stop immediately upon reaching the monthly loss limit of -300.",
+        rule3: "3. Stop immediately if daily profit drops by 50% (e.g., won 100, lost back to 50).",
+        rule4: "4. Gamble no more than 4 times per week.",
+        rule5: "5. Record P/L + Mood after each bet.",
+        calendarTitle: "Monthly P/L Calendar",
+        prevMonthBtn: "Prev Month",
+        currentMonthBtn: "This Month",
+        nextMonthBtn: "Next Month",
+        performanceTitle: "Performance Statistics",
+        bestDaysHeader: "Best Performing Days",
+        worstDaysHeader: "Worst Performing Days",
+        noRecords: "No records yet",
+        noProfitRecords: "No profitable records",
+        noLossRecords: "No loss records",
+        summaryTargetReached: "🎉 Target Reached! Monthly Profit: ${profit}",
+        summaryStopLoss: "⚠️ Stop Loss Triggered! Loss: ${loss}, should stop.",
+        summaryCurrentPL: "Current Cumulative P/L: {sign}${profit}",
+        calendarDayNames: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+        lossMessages: ['Don\'t give up!', 'Keep trying!', 'Failure is the mother of success!', 'Stay positive!', 'Comeback!', 'Keep calm!'],
+        langNotSupported: "Language not supported yet",
+        editAction: "✏️ Edit",
+        deleteAction: "🗑 Delete"
+      }
+    }
+    
+    let currentLang = 'zh'; // Default language
+    
+    function setLanguage(lang) {
+      if (!translations[lang]) return;
+      currentLang = lang;
+      localStorage.setItem('selectedLanguage', lang);
+      
+      const elements = document.querySelectorAll('[data-translate-key]');
+      elements.forEach(el => {
+        const key = el.dataset.translateKey;
+        if (translations[lang][key]) {
+          if (el.tagName === 'TITLE') {
+            document.title = translations[lang][key];
+          } else {
+            el.textContent = translations[lang][key];
+          }
+        }
+      })
+      
+      // Update active flag
+      document.querySelectorAll('.flag').forEach(f => f.classList.remove('active'))
+      document.getElementById(`flag-${lang}`).classList.add('active')
+      
+      // Rerender dynamic content
+      renderRecords(); // This will also call renderCalendar and updatePerformanceSummary
+    }
+
     let records = JSON.parse(localStorage.getItem('gamblingRecords')) || []
     let cumulativeProfit = 0
 
@@ -847,6 +1030,7 @@
 
     function renderRecords() {
       recordTable.innerHTML = ''
+      const langData = translations[currentLang]; // 获取当前语言数据
       
       // 创建记录的副本并按日期降序排序（最新的在前面）
       const sortedRecords = [...records].sort((a, b) => {
@@ -884,8 +1068,8 @@
             <td class="${cumulativeClass}">${cumulativeProfit >= 0 ? '+' : '-'}${Math.abs(cumulativeProfit)}$</td>
             <td>${record.mood}</td>
             <td>
-              <span class="action-btn" onclick="editRecord(${originalIndex})">✏️ 修改</span> | 
-              <span class="action-btn" onclick="deleteRecord(${originalIndex})">🗑 删除</span>
+              <span class="action-btn" onclick="editRecord(${originalIndex})">${langData.editAction}</span> | 
+              <span class="action-btn" onclick="deleteRecord(${originalIndex})">${langData.deleteAction}</span>
             </td>
           </tr>
         `
@@ -900,17 +1084,20 @@
 
     function updateSummary(totalProfit) {
       const cumulativeProfit = totalProfit || 0
+      const langData = translations[currentLang];
       
       if (cumulativeProfit >= 1500) {
-        summary.textContent = `🎉 达成目标！本月盈利 ${cumulativeProfit}$`
+        summary.textContent = langData.summaryTargetReached.replace('{profit}', cumulativeProfit);
         summary.style.color = '#28a745'
         summary.style.backgroundColor = '#d4edda'
       } else if (cumulativeProfit <= -300) {
-        summary.textContent = `⚠️ 已触发止损，亏损 ${Math.abs(cumulativeProfit)}$，应停止。`
+        summary.textContent = langData.summaryStopLoss.replace('{loss}', Math.abs(cumulativeProfit));
         summary.style.color = '#dc3545'
         summary.style.backgroundColor = '#f8d7da'
       } else {
-        summary.textContent = `当前累计盈亏：${cumulativeProfit >= 0 ? '+' : '-'}${Math.abs(cumulativeProfit)}$`
+        summary.textContent = langData.summaryCurrentPL
+          .replace('{sign}', cumulativeProfit >= 0 ? '+' : '-')
+          .replace('{profit}', Math.abs(cumulativeProfit));
         summary.style.color = cumulativeProfit >= 0 ? '#28a745' : '#dc3545'
         summary.style.backgroundColor = '#f8f9fa'
       }
@@ -960,7 +1147,7 @@
     }
 
     function deleteRecord(index) {
-      if (confirm('确定要删除这条记录吗？')) {
+      if (confirm(translations[currentLang].deleteConfirm)) {
         records.splice(index, 1)
         localStorage.setItem('gamblingRecords', JSON.stringify(records))
         renderRecords()
@@ -978,13 +1165,13 @@
       
       // Update calendar title
       document.querySelector('.calendar-title').textContent = 
-        `${year}年${month + 1}月盈亏日历`
+        `${year}${currentLang === 'zh' ? '年' : '-'}${month + 1}${currentLang === 'zh' ? '月盈亏日历' : ' P/L Calendar'}`
       
       // Clear previous calendar
       calendarGrid.innerHTML = ''
       
-      // Add day headers
-      const daysOfWeek = ['日', '一', '二', '三', '四', '五', '六']
+      // Add day headers using translated names
+      const daysOfWeek = translations[currentLang].calendarDayNames
       daysOfWeek.forEach(day => {
         const dayHeader = document.createElement('div')
         dayHeader.className = 'calendar-day-header'
@@ -1107,8 +1294,8 @@
       
       // If no records, don't display anything
       if (records.length === 0) {
-        bestDaysList.innerHTML = '<div class="performance-item"><span>暂无记录</span></div>'
-        worstDaysList.innerHTML = '<div class="performance-item"><span>暂无记录</span></div>'
+        bestDaysList.innerHTML = `<div class="performance-item"><span>${translations[currentLang].noRecords}</span></div>`
+        worstDaysList.innerHTML = `<div class="performance-item"><span>${translations[currentLang].noRecords}</span></div>`
         return
       }
       
@@ -1156,7 +1343,7 @@
           bestDaysList.appendChild(item)
         })
       } else {
-        bestDaysList.innerHTML = '<div class="performance-item"><span>暂无盈利记录</span></div>'
+        bestDaysList.innerHTML = `<div class="performance-item"><span>${translations[currentLang].noProfitRecords}</span></div>`
       }
       
       // 渲染最差表现日（只显示亏损的日期）
@@ -1178,7 +1365,7 @@
           worstDaysList.appendChild(item)
         })
       } else {
-        worstDaysList.innerHTML = '<div class="performance-item"><span>暂无亏损记录</span></div>'
+        worstDaysList.innerHTML = `<div class="performance-item"><span>${translations[currentLang].noLossRecords}</span></div>`
       }
     }
     
@@ -1313,15 +1500,8 @@
       // 添加脉动效果
       element.classList.add('loss-effect')
       
-      // 创建鼓励消息
-      const messages = [
-        '不气馁!',
-        '再接再厉!',
-        '失败是成功之母!',
-        '不要灰心!',
-        '东山再起!',
-        '稳住心态!'
-      ]
+      // 创建鼓励消息 (使用当前语言)
+      const messages = translations[currentLang].lossMessages
       
       const message = document.createElement('div')
       message.className = 'loss-message'
@@ -1338,6 +1518,25 @@
     }
 
     renderRecords()
+    
+    // 添加语言切换事件监听
+    document.getElementById('language-switcher').addEventListener('click', (e) => {
+      if (e.target.classList.contains('flag')) {
+        const langId = e.target.id;
+        const lang = langId.split('-')[1];
+        
+        if (lang === 'zh' || lang === 'en') {
+          setLanguage(lang);
+        } else {
+          alert(translations[currentLang].langNotSupported);
+        }
+      }
+    });
+    
+    // 初始化：加载保存的语言或使用默认语言
+    const savedLang = localStorage.getItem('selectedLanguage');
+    setLanguage(savedLang || 'zh');
+
   </script>
 </body>
 </html>
